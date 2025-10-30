@@ -2,33 +2,72 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="0dp"
+    android:background="@drawable/gradient_background">
+
+    <!-- Fondo con bordes superiores redondeados -->
+
+    <!-- Animación Lottie encima del fondo -->
 
     <TextView
         android:id="@+id/tvWelcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="335dp"
+        android:layout_height="61dp"
+        android:layout_marginTop="56dp"
         android:text="¡Bienvenido al Registro de Estudiantes!"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="100dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <View
+        android:id="@+id/viewBackground"
+        android:layout_width="406dp"
+        android:layout_height="536dp"
+        android:layout_marginTop="300dp"
+        android:background="@drawable/bg_rounded_top"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationView"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="444dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/students" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnGoToRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="164dp"
+        android:background="@drawable/button_gradient"
         android:text="Registrar Alumnos"
+        android:textColor="#FFFFFF"
         android:textSize="18sp"
-        android:backgroundTint="#03A9F4"
-        app:layout_constraintTop_toBottomOf="@+id/tvWelcome"
-        app:layout_constraintStart_toStartOf="parent"
+        app:backgroundTint="@null"
+        app:icon="@drawable/add"
+        app:iconGravity="start"
+        app:iconPadding="4dp"
+        app:iconSize="32dp"
+        app:iconTint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="50dp"/>
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvWelcome" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

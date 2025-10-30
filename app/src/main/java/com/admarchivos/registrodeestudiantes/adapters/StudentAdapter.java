@@ -3,6 +3,7 @@ package com.admarchivos.registrodeestudiantes.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,19 +39,27 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
     }
 
     static class StudentViewHolder extends RecyclerView.ViewHolder {
+        private ImageView ivStudentIcon;
         private TextView tvFullName, tvEmail, tvStudentCode;
 
         public StudentViewHolder(@NonNull View itemView) {
             super(itemView);
+            // INICIALIZAR LAS VISTAS UNA SOLA VEZ
+            ivStudentIcon = itemView.findViewById(R.id.ivStudentIcon);
             tvFullName = itemView.findViewById(R.id.tvFullName);
             tvEmail = itemView.findViewById(R.id.tvEmail);
             tvStudentCode = itemView.findViewById(R.id.tvStudentCode);
+            // ELIMINÉ LAS LÍNEAS DUPLICADAS
         }
 
         public void bind(Student student) {
+            // Configurar la imagen
+            ivStudentIcon.setImageResource(R.drawable.graduated);
+
+            // Configurar textos
             tvFullName.setText(student.getFullName());
             tvEmail.setText(student.getEmail());
-            tvStudentCode.setText(student.getStudentCode());
+            tvStudentCode.setText("Código: " + student.getStudentCode());
         }
     }
 }

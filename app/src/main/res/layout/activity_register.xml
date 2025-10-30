@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_rounded_top_gradient"
     android:padding="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,7 +19,11 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            app:boxStrokeColor="#1565C0"
+            app:hintTextColor="#1565C0"
+            app:startIconTint="#1565C0"
+            app:endIconTint="#1565C0">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etName"
@@ -36,7 +42,11 @@
             app:layout_constraintTop_toBottomOf="@id/inputLayoutName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            app:boxStrokeColor="#1565C0"
+            app:hintTextColor="#1565C0"
+            app:startIconTint="#1565C0"
+            app:endIconTint="#1565C0">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etLastName"
@@ -55,7 +65,11 @@
             app:layout_constraintTop_toBottomOf="@id/inputLayoutLastName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            app:boxStrokeColor="#1565C0"
+            app:hintTextColor="#1565C0"
+            app:startIconTint="#1565C0"
+            app:endIconTint="#1565C0">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmail"
@@ -74,7 +88,11 @@
             app:layout_constraintTop_toBottomOf="@id/inputLayoutEmail"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            app:boxStrokeColor="#1565C0"
+            app:hintTextColor="#1565C0"
+            app:startIconTint="#1565C0"
+            app:endIconTint="#1565C0">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etStudentCode"
@@ -85,27 +103,31 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Botón Guardar -->
-        <Button
+        <!-- Botón Guardar con fondo blanco redondeado -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSave"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Guardar Estudiante"
             android:textSize="18sp"
-            android:backgroundTint="#03A9F4"
+            android:background="@drawable/button_white_rounded"
+            app:backgroundTint="@null"
+            android:textColor="#000000"
             app:layout_constraintTop_toBottomOf="@id/inputLayoutCode"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="30dp"/>
 
-        <!-- Botón Ver Lista -->
-        <Button
+        <!-- Botón Ver Lista con fondo blanco redondeado -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnViewList"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ver Lista de Estudiantes"
             android:textSize="16sp"
-            android:backgroundTint="#03A9F4"
+            android:background="@drawable/button_white_rounded"
+            app:backgroundTint="@null"
+            android:textColor="#000000"
             app:layout_constraintTop_toBottomOf="@id/btnSave"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

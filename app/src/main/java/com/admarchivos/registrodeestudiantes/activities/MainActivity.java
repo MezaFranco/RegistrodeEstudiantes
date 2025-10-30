@@ -4,7 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
-
+import android.view.View;
+import android.graphics.Color;
 import com.admarchivos.registrodeestudiantes.R;
 
 /**
@@ -20,6 +21,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Hacer status bar transparente
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        // Para texto/iconos claros en status bar
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        );
 
         // Establece el layout XML que define la interfaz de usuario
         setContentView(R.layout.activity_main);
