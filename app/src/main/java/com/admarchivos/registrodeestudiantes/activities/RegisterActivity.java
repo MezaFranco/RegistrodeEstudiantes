@@ -4,10 +4,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.TextWatcher;
+import android.text.Editable;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.admarchivos.registrodeestudiantes.R;
 import com.admarchivos.registrodeestudiantes.models.Student;
@@ -29,17 +33,12 @@ public class RegisterActivity extends AppCompatActivity {
     // SharedPreferences para persistencia de datos
     private SharedPreferences sharedPreferences;
 
-    /**
-     * Metodo llamado cuando la actividad es creada
-     * Inicializa la interfaz y configura los listeners de botones
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Hacer status bar transparente
         getWindow().setStatusBarColor(Color.TRANSPARENT);
-        // Para texto/iconos claros en status bar
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         );
@@ -52,40 +51,186 @@ public class RegisterActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("StudentPrefs", MODE_PRIVATE);
 
         // Obtener referencias a los botones del layout
-        Button btnSave = findViewById(R.id.btnSave);
-        Button btnViewList = findViewById(R.id.btnViewList);
+        MaterialButton btnSave = findViewById(R.id.btnSave);
+        MaterialButton btnViewList = findViewById(R.id.btnViewList);
 
-        // Configurar listeners para los botones
-        btnSave.setOnClickListener(v -> saveStudent());
-        btnViewList.setOnClickListener(v -> goToStudentList());
+        // Configurar eventos táctiles igual que en MainActivity
+        setupButtonWithEffects(btnSave, v -> saveStudent(), R.drawable.button_gradient_save_pressed, R.drawable.button_white_rounded);
+        setupButtonWithEffects(btnViewList, v -> goToStudentList(), R.drawable.button_gradient_view_pressed, R.drawable.button_white_rounded);
     }
 
     /**
-     * Inicializa las vistas encontrando los elementos del layout por su ID
-     * Asigna las referencias a las variables de instancia
+     * Configura un botón con efectos visuales y funcionalidad (igual que MainActivity)
      */
+    private void setupButtonWithEffects(MaterialButton button, View.OnClickListener clickAction, int pressedDrawable, int normalDrawable) {
+        button.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Efecto visual: escalar el botón y cambiar color al presionar
+                        v.animate()
+                                .scaleX(0.95f)
+                                .scaleY(0.95f)
+                                .setDuration(100)
+                                .start();
+                        // Cambiar a drawable presionado
+                        v.setBackgroundResource(pressedDrawable);
+                        return true;
+
+                    case MotionEvent.ACTION_UP:
+                        // Efecto visual: restaurar tamaño y color del botón
+                        v.animate()
+                                .scaleX(1.0f)
+                                .scaleY(1.0f)
+                                .setDuration(100)
+                                .start();
+                        // Restaurar color original
+                        v.setBackgroundResource(normalDrawable);
+
+                        // Ejecutar la acción del botón
+                        clickAction.onClick(v);
+                        return true;
+
+                    case MotionEvent.ACTION_CANCEL:
+                        // Restaurar tamaño y color si el usuario desliza fuera del botón
+                        v.animate()
+                                .scaleX(1.0f)
+                                .scaleY(1.0f)
+                                .setDuration(100)
+                                .start();
+                        // Restaurar color original
+                        v.setBackgroundResource(normalDrawable);
+                        return true;
+                }
+                return false;
+            }
+        });
+    }
+
     private void initViews() {
         etName = findViewById(R.id.etName);
         etLastName = findViewById(R.id.etLastName);
         etEmail = findViewById(R.id.etEmail);
         etStudentCode = findViewById(R.id.etStudentCode);
+
+        // Aplicar filtros y validación en tiempo real
+        setupRealTimeValidation();
     }
 
     /**
-     * Guarda un nuevo estudiante en SharedPreferences
-     * Valida los campos, crea el objeto Student y lo agrega a la lista existente
+     * Configura la validación en tiempo real para nombre y apellido
      */
+    private void setupRealTimeValidation() {
+        // Aplicar filtro para solo letras y espacios
+        InputFilter lettersFilter = getLettersAndSpacesOnlyFilter();
+        etName.setFilters(new InputFilter[]{lettersFilter, new InputFilter.LengthFilter(30)});
+        etLastName.setFilters(new InputFilter[]{lettersFilter, new InputFilter.LengthFilter(30)});
+
+        // Validación en tiempo real para nombre
+        etName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s != null) {
+                    validateNameField(etName, s.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        // Validación en tiempo real para apellido
+        etLastName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s != null) {
+                    validateNameField(etLastName, s.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+    }
+
+    /**
+     * Valida un campo de nombre/apellido en tiempo real
+     */
+    private void validateNameField(TextInputEditText field, String text) {
+        if (!text.isEmpty() && !isValidName(text)) {
+            field.setError("Solo se permiten letras y espacios");
+        } else {
+            field.setError(null);
+        }
+    }
+
+    /**
+     * Filtro que permite SOLO letras, espacios y caracteres acentuados
+     */
+    private InputFilter getLettersAndSpacesOnlyFilter() {
+        return (source, start, end, dest, dstart, dend) -> {
+            if (source.length() == 0) return null;
+
+            StringBuilder filteredString = new StringBuilder();
+            for (int i = start; i < end; i++) {
+                char c = source.charAt(i);
+                if (Character.isLetter(c) || c == ' ' ||
+                        c == 'á' || c == 'é' || c == 'í' || c == 'ó' || c == 'ú' ||
+                        c == 'Á' || c == 'É' || c == 'Í' || c == 'Ó' || c == 'Ú' ||
+                        c == 'ñ' || c == 'Ñ' || c == 'ü' || c == 'Ü') {
+                    filteredString.append(c);
+                }
+                // Los caracteres no permitidos se ignoran silenciosamente
+            }
+            return filteredString.toString();
+        };
+    }
+
+    /**
+     * Verifica si un texto contiene SOLO letras y espacios
+     */
+    private boolean isValidName(String text) {
+        return text.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\\s]+$");
+    }
+
     private void saveStudent() {
         // Obtener y limpiar los textos de los campos de entrada
-        String name = etName.getText().toString().trim();
-        String lastName = etLastName.getText().toString().trim();
-        String email = etEmail.getText().toString().trim();
-        String studentCode = etStudentCode.getText().toString().trim();
+        String name = etName.getText() != null ? etName.getText().toString().trim() : "";
+        String lastName = etLastName.getText() != null ? etLastName.getText().toString().trim() : "";
+        String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
+        String studentCode = etStudentCode.getText() != null ? etStudentCode.getText().toString().trim() : "";
 
         // Validación básica - Verificar que ningún campo esté vacío
         if (name.isEmpty() || lastName.isEmpty() || email.isEmpty() || studentCode.isEmpty()) {
             Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
-            return; // Detener ejecución si hay campos vacíos
+            return;
+        }
+
+        // Validar que nombre y apellido solo contengan letras y espacios
+        if (!isValidName(name)) {
+            etName.setError("Solo se permiten letras y espacios");
+            etName.requestFocus();
+            return;
+        }
+
+        if (!isValidName(lastName)) {
+            etLastName.setError("Solo se permiten letras y espacios");
+            etLastName.requestFocus();
+            return;
+        }
+
+        // Validar formato de email
+        if (!isValidEmail(email)) {
+            etEmail.setError("Ingrese un email válido");
+            etEmail.requestFocus();
+            return;
         }
 
         // Crear nuevo objeto Student con los datos capturados
@@ -98,53 +243,32 @@ public class RegisterActivity extends AppCompatActivity {
 
         saveStudentsToSharedPreferences(studentList);
 
-
         Toast.makeText(this, "Estudiante registrado exitosamente", Toast.LENGTH_SHORT).show();
 
         clearFields();
     }
 
     /**
-     * Obtiene la lista de estudiantes desde SharedPreferences
-     * Convierte el JSON almacenado a una lista de objetos Student
-     *
-     * @return Lista de estudiantes, lista vacía si no hay datos
+     * Valida formato de email
      */
+    private boolean isValidEmail(String email) {
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}";
+        return email.matches(emailPattern);
+    }
+
     private List<Student> getStudentsFromSharedPreferences() {
-        // Obtener el JSON de estudiantes, usar "[]" como valor por defecto (array vacío)
         String studentsJson = sharedPreferences.getString("students_list", "[]");
-
-        // Crear instancia de Gson para conversión JSON-Objeto
         Gson gson = new Gson();
-
-        // Crear TypeToken para que Gson sepa el tipo específico (List<Student>)
         Type type = new TypeToken<List<Student>>(){}.getType();
-
-        // Convertir JSON a lista de objetos Student
         List<Student> studentList = gson.fromJson(studentsJson, type);
-
-        // Retornar la lista o una nueva lista vacía si es null
         return studentList != null ? studentList : new ArrayList<>();
     }
 
-    /**
-     * Guarda la lista de estudiantes en SharedPreferences
-     * Convierte la lista a formato JSON para almacenamiento
-     *
-     * @param studentList Lista de estudiantes a guardar
-     */
     private void saveStudentsToSharedPreferences(List<Student> studentList) {
-        // Obtener editor para modificar SharedPreferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        // Convertir lista de estudiantes a formato JSON
         Gson gson = new Gson();
         String studentsJson = gson.toJson(studentList);
-
-        // Guardar el JSON en SharedPreferences con la clave "students_list"
         editor.putString("students_list", studentsJson);
-
-        // Aplicar cambios (apply() es asíncrono, commit() es síncrono)
         editor.apply();
     }
 
