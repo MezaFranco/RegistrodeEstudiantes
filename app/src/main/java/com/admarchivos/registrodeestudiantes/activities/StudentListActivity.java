@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -86,6 +87,7 @@ public class StudentListActivity extends AppCompatActivity {
      * Carga la lista de estudiantes desde SharedPreferences
      * - Obtiene el JSON guardado con la lista de estudiantes
      * - Convierte el JSON a lista de objetos Student usando Gson
+     * - INVERTE LA LISTA para mostrar los más recientes primero
      * - Actualiza la lista y notifica al adapter
      */
     private void loadStudentsFromSharedPreferences() {
@@ -106,7 +108,10 @@ public class StudentListActivity extends AppCompatActivity {
 
         // Si se cargaron estudiantes, actualizar la lista
         if (loadedStudents != null) {
-            // Limpiar lista actual y agregar todos los estudiantes cargados
+            // INVERTIR LA LISTA: los más recientes primero
+            Collections.reverse(loadedStudents);
+
+            // Limpiar lista actual y agregar la lista invertida
             studentList.clear();
             studentList.addAll(loadedStudents);
 
